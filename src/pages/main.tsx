@@ -1,10 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
 import React from 'react';
 import {
   SafeAreaView,
@@ -17,7 +10,7 @@ import {
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
-function App(): React.JSX.Element {
+function Main(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
@@ -58,4 +51,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default App;
+export default Main;

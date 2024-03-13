@@ -5,5 +5,6 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': 'warn',
     semi: 'off',
     'prettier/prettier': 0,
+    'react/react-in-jsx-scope': 'off'
   },
 };

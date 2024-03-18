@@ -1,7 +1,9 @@
+import React from 'react'
 import {useNavigation} from '@react-navigation/native'
 import {useState} from 'react'
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native'
 import {TextInput} from 'react-native-gesture-handler'
+import {theme} from '../theme'
 import {navigationProps} from '../types'
 
 type Inputs = {
@@ -15,9 +17,10 @@ export const Login = () => {
   const [password, setPassword] = useState('')
 
   const navigation = useNavigation<navigationProps>()
+  navigation.navigate('main')
 
   const handleLogin = () => {
-    if (email === '' && password === '') {
+    if (email.length > 0 && password.length > 0) {
       navigation.navigate('main')
     }
   }
@@ -45,11 +48,7 @@ export const Login = () => {
         onChangeText={setPassword}
       />
       <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => {
-            console.log('login')
-          }}>
+        <TouchableOpacity style={styles.button} onPress={handleLogin}>
           <View>
             <Text style={styles.buttonText}>Login</Text>
           </View>
@@ -85,7 +84,7 @@ const styles = StyleSheet.create({
     width: 300,
     paddingVertical: 4,
     paddingHorizontal: 8,
-    borderColor: '#7dd3fc',
+    borderColor: theme.primary500,
     backgroundColor: '#e0f2fe',
   },
   buttonContainer: {
@@ -94,12 +93,13 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   button: {
-    backgroundColor: '#7dd3fc',
+    backgroundColor: theme.primary500,
     padding: 8,
     paddingHorizontal: 16,
     borderRadius: 100,
   },
   buttonText: {
     fontWeight: 'bold',
+    color: theme.textOnPrimary,
   },
 })

@@ -1,10 +1,9 @@
-import React from 'react'
-import {useNavigation} from '@react-navigation/native'
-import {useState} from 'react'
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native'
-import {TextInput} from 'react-native-gesture-handler'
-import {theme} from '../theme'
-import {navigationProps} from '../types'
+import { useNavigation } from '@react-navigation/native'
+import React, { useState } from 'react'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { TextInput } from 'react-native-gesture-handler'
+import { theme } from '../theme'
+import { navigationProps } from '../types'
 
 type Inputs = {
   email: string

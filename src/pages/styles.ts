@@ -27,3 +27,50 @@ export const SubmitButton = styled(RectButton)`
   color: white;
   border-radius: 20px;
 `
+
+export const List = styled.FlatList`
+  margin-top: 8px;
+`
+
+export const User = styled.View`
+  align-items: center;
+  justify-content: flex-start;
+  padding: 16px;
+  border-radius: 5px;
+  margin-top: 16px;
+  border: ${props => props.theme.primary400} 1px solid;
+`
+
+export const Avatar = styled.Image`
+  width: 64px;
+  height: 64px;
+  border-radius: 32px;
+  border: ${props => props.theme.primary400} 2px solid;
+`
+
+export const Name = styled.Text`
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 8px;
+`
+
+export const Bio = styled.Text.attrs({
+  numberOfLines: 3,
+})`
+  opacity: 0.9;
+`
+
+export const ProfileButton = styled(RectButton)`
+  background-color: ${props => props.theme.primary400};
+  justify-content: center;
+  align-items: center;
+  margin-top: 8px;
+  padding: 4px 8px;
+  color: white;
+`
+
+export const ProfileButtonText = styled.Text`
+  color: white;
+  font-weight: bold;
+  text-transform: capitalize;
+`

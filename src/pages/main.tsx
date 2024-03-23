@@ -1,12 +1,33 @@
 import React, {Component} from 'react'
-import {StyleSheet, Text, View} from 'react-native'
+import {Keyboard, StyleSheet, View} from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import {githubApi} from '../services/githubApi'
 import {theme} from '../theme'
-import {Container, Form, Input, SubmitButton} from './styles'
+import {
+  Avatar,
+  Bio,
+  Container,
+  Form,
+  Input,
+  List,
+  Name,
+  ProfileButton,
+  ProfileButtonText,
+  SubmitButton,
+  User,
+} from './styles'
 
+type User = {
+  name: string
+  login: string
+  bio: string
+  avatar: string
+}
 class Main extends Component {
-  state = {
+  state: {
+    newUser: string
+    users: User[]
+  } = {
     newUser: '',
     users: [],
   }
@@ -14,23 +35,24 @@ class Main extends Component {
   handleAddUser = async () => {
     const {users, newUser} = this.state
     let githubUser: any = null
-    console.log(newUser)
     try {
-      const { data } = await githubApi.get(`/users/kefflen`)
+      const {data} = await githubApi.get(`/users/${newUser}`)
       githubUser = {
         name: data.name,
         login: data.login,
         bio: data.bio,
         avatar: data.avatar_url,
       }
+
+      this.setState({
+        users: [...users, githubUser],
+        newUser: '',
+      })
+
+      Keyboard.dismiss()
     } catch (error) {
-      githubUser = error
+      console.log('Error fetching github data: ', error)
     }
-    
-    this.setState({
-      users: [...users, githubUser],
-      newUser: '',
-    })
   }
 
   render() {
@@ -42,7 +64,9 @@ class Main extends Component {
             autoCorrect={false}
             placeholder="Adicione usuario..."
             value={this.state.newUser}
-            onChange={text => this.setState({...this.state, newUser: text})}
+            onChange={text =>
+              this.setState({...this.state, newUser: text.nativeEvent.text})
+            }
             returnKeyType="send"
             onSubmitEditing={this.handleAddUser}
           />
@@ -53,9 +77,24 @@ class Main extends Component {
             <Icon name="add" size={20} color={theme.textOnPrimary} />
           </SubmitButton>
         </Form>
-        <View>
-          <Text>{JSON.stringify(this.state.users[0])}</Text>
-        </View>
+        <List
+          data={this.state.users}
+          keyExtractor={user => user.login}
+          renderItem={({item}) => (
+            <User>
+              <View>
+                <Avatar source={{uri: item.avatar}} />
+              </View>
+              <View>
+                <Name>{item.name}</Name>
+                <Bio>{item.bio}</Bio>
+                <ProfileButton styles={styles.ProfileButton}>
+                  <ProfileButtonText>Ver perfil</ProfileButtonText>
+                </ProfileButton>
+              </View>
+            </User>
+          )}
+        />
       </Container>
     )
   }
@@ -64,6 +103,9 @@ class Main extends Component {
 const styles = StyleSheet.create({
   SubmitButton: {
     borderRadius: 5,
+  },
+  ProfileButton: {
+    borderRadius: 20,
   },
 })
 

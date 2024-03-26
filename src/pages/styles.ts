@@ -26,6 +26,10 @@ export const SubmitButton = styled(RectButton)`
   padding: 0 12px;
   color: white;
   border-radius: 20px;
+
+  :disabled {
+    opacity: 0.5;
+  }
 `
 
 export const List = styled.FlatList`
@@ -62,6 +66,15 @@ export const Bio = styled.Text.attrs({
 
 export const ProfileButton = styled(RectButton)`
   background-color: ${props => props.theme.primary400};
+  justify-content: center;
+  align-items: center;
+  margin-top: 8px;
+  padding: 4px 8px;
+  color: white;
+`
+
+export const DeleteButton = styled(RectButton)`
+  background-color: #f43f5e;
   justify-content: center;
   align-items: center;
   margin-top: 8px;

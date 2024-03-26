@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { TextInput } from 'react-native-gesture-handler'
 import { theme } from '../theme'
@@ -16,7 +16,9 @@ export const Login = () => {
   const [password, setPassword] = useState('')
 
   const navigation = useNavigation<navigationProps>()
-  navigation.navigate('main')
+  useEffect(() => {
+    navigation.navigate('main')
+  }, [navigation])
 
   const handleLogin = () => {
     if (email.length > 0 && password.length > 0) {

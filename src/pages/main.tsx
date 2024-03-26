@@ -1,5 +1,6 @@
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import React, {Component} from 'react'
-import {Keyboard, StyleSheet, View} from 'react-native'
+import {ActivityIndicator, Keyboard, StyleSheet, View} from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import {githubApi} from '../services/githubApi'
 import {theme} from '../theme'
@@ -7,6 +8,7 @@ import {
   Avatar,
   Bio,
   Container,
+  DeleteButton,
   Form,
   Input,
   List,
@@ -23,39 +25,74 @@ type User = {
   bio: string
   avatar: string
 }
+
+type State = {
+  newUser: string
+  users: User[]
+  loading: boolean
+}
+
 class Main extends Component {
-  state: {
-    newUser: string
-    users: User[]
-  } = {
+  state: State = {
     newUser: '',
     users: [],
+    loading: false,
   }
 
-  handleAddUser = async () => {
-    const {users, newUser} = this.state
-    let githubUser: any = null
-    try {
-      const {data} = await githubApi.get(`/users/${newUser}`)
-      githubUser = {
-        name: data.name,
-        login: data.login,
-        bio: data.bio,
-        avatar: data.avatar_url,
-      }
+  async componentDidMount() {
+    const usersData = await AsyncStorage.getItem('users')
+    if (usersData) {
+      this.setState({...this.state, users: JSON.parse(usersData)})
+    }
+  }
 
-      this.setState({
-        users: [...users, githubUser],
-        newUser: '',
-      })
-
-      Keyboard.dismiss()
-    } catch (error) {
-      console.log('Error fetching github data: ', error)
+  componentDidUpdate(_, prevState) {
+    if (prevState.users !== this.state.users) {
+      AsyncStorage.setItem('users', JSON.stringify(this.state.users))
     }
   }
 
   render() {
+    const {users, newUser, loading} = this.state
+
+    const handleAddUser = async () => {
+      let githubUser: any = null
+
+      const userAlreadyExists = users.find(user => user.login === newUser)
+      if (userAlreadyExists) {
+        console.log('User already exists')
+        return
+      }
+
+      this.setState({...this.state, loading: true})
+
+      try {
+        const {data} = await githubApi.get(`/users/${newUser}`)
+        githubUser = {
+          name: data.name,
+          login: data.login,
+          bio: data.bio,
+          avatar: data.avatar_url,
+        }
+
+        this.setState({
+          users: [...users, githubUser],
+          newUser: '',
+        })
+
+        Keyboard.dismiss()
+      } catch (error) {
+        console.log('Error fetching github data: ', error)
+      } finally {
+        this.setState({...this.state, loading: false})
+      }
+    }
+
+    const hadleDeleteUser = async (login: string) => {
+      const newUsersData = users.filter(user => user.login !== login)
+      this.setState({...this.state, users: newUsersData})
+    }
+
     return (
       <Container>
         <Form>
@@ -68,13 +105,15 @@ class Main extends Component {
               this.setState({...this.state, newUser: text.nativeEvent.text})
             }
             returnKeyType="send"
-            onSubmitEditing={this.handleAddUser}
+            onSubmitEditing={handleAddUser}
           />
 
-          <SubmitButton
-            style={styles.SubmitButton}
-            onPress={this.handleAddUser}>
-            <Icon name="add" size={20} color={theme.textOnPrimary} />
+          <SubmitButton style={styles.SubmitButton} onPress={handleAddUser}>
+            {loading ? (
+              <ActivityIndicator color={'#fff'} />
+            ) : (
+              <Icon name="add" size={20} color={theme.textOnPrimary} />
+            )}
           </SubmitButton>
         </Form>
         <List
@@ -91,6 +130,11 @@ class Main extends Component {
                 <ProfileButton styles={styles.ProfileButton}>
                   <ProfileButtonText>Ver perfil</ProfileButtonText>
                 </ProfileButton>
+                <DeleteButton
+                  styles={styles.ProfileButton}
+                  onPress={() => hadleDeleteUser(item.login)}>
+                  <ProfileButtonText>Excluir</ProfileButtonText>
+                </DeleteButton>
               </View>
             </User>
           )}

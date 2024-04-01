@@ -25,7 +25,6 @@ export const SubmitButton = styled(RectButton)`
   margin-left: 8px;
   padding: 0 12px;
   color: white;
-  border-radius: 20px;
 
   :disabled {
     opacity: 0.5;
@@ -48,7 +47,6 @@ export const User = styled.View`
 export const Avatar = styled.Image`
   width: 64px;
   height: 64px;
-  border-radius: 32px;
   border: ${props => props.theme.primary400} 2px solid;
 `
 

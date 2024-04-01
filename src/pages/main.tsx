@@ -57,11 +57,11 @@ class Main extends Component {
 
     const handleAddUser = async () => {
       let githubUser: any = null
-
-      const userAlreadyExists = users.find(user => user.login === newUser)
+      const userAlreadyExists = users.find(
+        user => user.login.toLowerCase() === newUser.toLowerCase(),
+      )
       if (userAlreadyExists) {
-        console.log('User already exists')
-        return
+        return this.setState({...this.state, loading: false})
       }
 
       this.setState({...this.state, loading: true})
@@ -122,7 +122,10 @@ class Main extends Component {
           renderItem={({item}) => (
             <User>
               <View>
-                <Avatar source={{uri: item.avatar}} />
+                <Avatar
+                  source={{uri: item.avatar}}
+                  style={styles.AvatarImage}
+                />
               </View>
               <View>
                 <Name>{item.name}</Name>
@@ -150,6 +153,9 @@ const styles = StyleSheet.create({
   },
   ProfileButton: {
     borderRadius: 20,
+  },
+  AvatarImage: {
+    borderRadius: 32,
   },
 })
 
